@@ -16,7 +16,7 @@ type Book struct {
 
 type AverageBookRating struct {
 	Book          Book    `bson:"book"`
-	AverageRating float64 `bson:"average_rating"`
+	AverageRating float64 `bson:"averageRating"`
 }
 
 type BookRating struct {

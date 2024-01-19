@@ -16,8 +16,8 @@ type Handler struct {
 }
 
 func NewWebserverHandler(globalInstances *global.Instance) Handler {
-	indexTemplate := template.Must(template.ParseFiles("templates/index.html", "templates/header.html"))
-	personalizedIndexTemplate := template.Must(template.ParseFiles("templates/index_perso.html", "templates/header.html"))
+	indexTemplate := template.Must(template.ParseFiles("templates/index.html", "templates/header.html", "templates/book_bar_average_rating.html"))
+	personalizedIndexTemplate := template.Must(template.ParseFiles("templates/index_perso.html", "templates/header.html", "templates/book_bar.html"))
 	tags, err := globalInstances.Mongo.Tags()
 	if err != nil {
 		log.Panicln(err)

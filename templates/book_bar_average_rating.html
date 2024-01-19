@@ -1,0 +1,17 @@
+{{ $recommendations := . }}
+<div class="book-container">
+    {{ range $recommendations }}
+    <div class="book-item">
+        <div class="book-image">
+            <img src="{{ .Book.ImageUrl }}" alt="{{ .Book.Title }}" />
+        </div>
+        <div class="book-title">{{ .Book.Title }}</div>
+        <div class="book-author-container">
+            {{ range .Book.Authors }}
+            <div class="book-author">{{ . }}</div>
+            {{ end }}
+        </div>
+        <div class="rating">{{ .AverageRating }}</div>
+    </div>
+    {{ end }}
+</div>

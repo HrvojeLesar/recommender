@@ -7,11 +7,7 @@
 
 <body>
     <h1>Najpopularnije knjige</h1>
-    <ul>
-        {{ $topBooks := .TopBooks }} {{ range $topBooks }}
-        <li>{{ .Book.Title }}</li>
-        {{ end }}
-    </ul>
+    {{ template "book_bar_average_rating.html" .TopBooks }}
     <select onchange="selectOnChange(this)">
         {{ $selectedTag := .SelectedTag }} {{ $tags := .Tags }} {{ range
         $tags }}
@@ -21,11 +17,7 @@
         {{ end }}
     </select>
     <h1>Najpopularnije knjige prema odabranom tagu</h1>
-    <ul>
-        {{ $topBooksByTag := .TopBooksByTag }} {{ range $topBooksByTag }}
-        <li>{{ .Book.Title }}</li>
-        {{ end }}
-    </ul>
+    {{ template "book_bar_average_rating.html" .TopBooksByTag }}
 </body>
 
 </html>

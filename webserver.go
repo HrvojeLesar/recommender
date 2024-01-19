@@ -12,6 +12,7 @@ import (
 
 func StartWebserver(handler *handler.Handler) {
 	r := mux.NewRouter()
+	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
 	r.HandleFunc("/", handler.Index).Methods("GET")
 	r.HandleFunc("/{userId}", handler.PersonalizedIndex).Methods("GET")
 

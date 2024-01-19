@@ -46,7 +46,19 @@ func (m *MongoInstance) TopBooksByUserRating() ([]models.AverageBookRating, erro
 		}},
 	}
 
-	booksCursor, err := usersCollection.Aggregate(m.ctx, mongo.Pipeline{unwindStage, groupStage, projectStage, sortStage})
+	roundProjectStage := bson.D{
+		{"$project", bson.D{
+			{"_id", 1},
+			{"book", 1},
+			{"totalRating", 1},
+			{"count", 1},
+			{"averageRating", bson.D{
+				{"$round", bson.A{"$averageRating", 2}},
+			}},
+		}},
+	}
+
+	booksCursor, err := usersCollection.Aggregate(m.ctx, mongo.Pipeline{unwindStage, groupStage, projectStage, sortStage, roundProjectStage})
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +128,19 @@ func (m *MongoInstance) TopBooksByGenre(genre string) ([]models.AverageBookRatin
 		}},
 	}
 
-	booksCursor, err := usersCollection.Aggregate(m.ctx, mongo.Pipeline{unwindStage, groupStage, projectStage, matchStage, sortStage})
+	roundProjectStage := bson.D{
+		{"$project", bson.D{
+			{"_id", 1},
+			{"book", 1},
+			{"totalRating", 1},
+			{"count", 1},
+			{"averageRating", bson.D{
+				{"$round", bson.A{"$averageRating", 2}},
+			}},
+		}},
+	}
+
+	booksCursor, err := usersCollection.Aggregate(m.ctx, mongo.Pipeline{unwindStage, groupStage, projectStage, matchStage, sortStage, roundProjectStage})
 	if err != nil {
 		return nil, err
 	}

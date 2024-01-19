@@ -6,13 +6,9 @@
 </head>
 
 <body>
+    {{ $recommendations := .BookRecommendations}}
     <h1>Preporučene knjige</h1>
-    <ul>
-        {{ $recommendations := .BookRecommendations }} {{ range
-        $recommendations }}
-        <li>{{ .Title }}</li>
-        {{ end }}
-    </ul>
+    {{ template "book_bar.html" $recommendations }}
 </body>
 
 </html>

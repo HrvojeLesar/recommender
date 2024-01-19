@@ -1,0 +1,67 @@
+html {
+    font-family:
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        Segoe UI,
+        Roboto,
+        Helvetica Neue,
+        Arial,
+        Noto Sans,
+        sans-serif,
+        Apple Color Emoji,
+        Segoe UI Emoji,
+        Segoe UI Symbol,
+        Noto Color Emoji;
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.book-container {
+    padding: 1rem;
+    overflow-x: auto;
+    gap: 2rem;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.book-item {
+    flex-grow: 0;
+    flex-shrink: 0;
+    text-align: center;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+}
+
+.book-title {
+    padding: 0.25rem 0rem;
+    text-decoration: none;
+    max-width: 160px;
+    font-weight: bold;
+}
+
+.book-image {
+    padding-top: 1.25rem;
+}
+
+.book-image img {
+    bottom: 0;
+    width: 160px;
+    height: 250px;
+}
+
+.book-author-container {
+    padding-top: 0.25rem;
+}
+
+.book-author {
+    text-decoration: underline;
+}
