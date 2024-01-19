@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"log"
 
 	"github.com/HrvojeLesar/recommender/config"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -38,7 +39,7 @@ func Setup(ctx context.Context, config config.Config) (*MongoInstance, error) {
 		config:   config.Mongo,
 	}
 
-	inst.iterateMostPopularTags()
+	log.Println(inst.NearestNeighbour(5))
 
 	return &inst, nil
 }
