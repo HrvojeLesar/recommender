@@ -1,11 +1,10 @@
 package db
 
 import (
-	"log"
-
 	"github.com/HrvojeLesar/recommender/db/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func (m *MongoInstance) TopBooksByUserRating() ([]models.AverageBookRating, error) {
@@ -140,14 +139,14 @@ func (m *MongoInstance) TopBooksByGenre(genre string) ([]models.AverageBookRatin
 	return books, nil
 }
 
-func (m *MongoInstance) NearestNeighbour(userId int) []models.Book {
+func (m *MongoInstance) NearestNeighbour(userId int64) ([]models.Book, error) {
 	usersCollection := m.database.Collection(USERSCOLLECTION)
 	var user models.User
 
 	result := usersCollection.FindOne(m.ctx, bson.D{{"_id", userId}})
 	err := result.Decode(&user)
 	if err != nil {
-		log.Panicln(err)
+		return nil, err
 	}
 
 	otherUsersCursor, err := usersCollection.Find(m.ctx, bson.D{
@@ -156,7 +155,7 @@ func (m *MongoInstance) NearestNeighbour(userId int) []models.Book {
 		}}},
 	})
 	if err != nil {
-		log.Panicln(err)
+		return nil, err
 	}
 	defer otherUsersCursor.Close(m.ctx)
 
@@ -164,10 +163,30 @@ func (m *MongoInstance) NearestNeighbour(userId int) []models.Book {
 	for otherUsersCursor.Next(m.ctx) {
 		var otherUser models.User
 		if err := otherUsersCursor.Decode(&otherUser); err != nil {
-			log.Panicln(err)
+			return nil, err
 		}
 
 		similarUsers.TryAdd(otherUser)
 	}
-	return similarUsers.BookRecommendations()
+	return similarUsers.BookRecommendations(), nil
+}
+
+func (m *MongoInstance) Tags() ([]models.Tag, error) {
+	tagsCollection := m.database.Collection(TAGSCOLLECTION)
+
+	tagsCursor, err := tagsCollection.Find(m.ctx, bson.D{}, options.Find().SetSort(bson.D{{"tag_name", 1}}))
+	if err != nil {
+		return nil, err
+	}
+	defer tagsCursor.Close(m.ctx)
+
+	tags := make([]models.Tag, 0, 10)
+	for tagsCursor.Next(m.ctx) {
+		var tag models.Tag
+		if err := tagsCursor.Decode(&tag); err != nil {
+			return nil, err
+		}
+		tags = append(tags, tag)
+	}
+	return tags, nil
 }

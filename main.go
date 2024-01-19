@@ -7,6 +7,7 @@ import (
 	"github.com/HrvojeLesar/recommender/config"
 	"github.com/HrvojeLesar/recommender/db"
 	"github.com/HrvojeLesar/recommender/global"
+	"github.com/HrvojeLesar/recommender/handler"
 )
 
 func main() {
@@ -21,6 +22,9 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
+
+	handler := handler.NewWebserverHandler(globalInstances.Instance())
+	StartWebserver(&handler)
 
 	cancel()
 }

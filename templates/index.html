@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {{ template "header.html" . }}
+</head>
+
+<body>
+    <h1>Najpopularnije knjige</h1>
+    <ul>
+        {{ $topBooks := .TopBooks }} {{ range $topBooks }}
+        <li>{{ .Book.Title }}</li>
+        {{ end }}
+    </ul>
+    <select onchange="selectOnChange(this)">
+        {{ $selectedTag := .SelectedTag }} {{ $tags := .Tags }} {{ range
+        $tags }}
+        <option {{ if eq .Name $selectedTag }} selected {{ end }} value="{{ .Name }}">
+            {{ .Name }}
+        </option>
+        {{ end }}
+    </select>
+    <h1>Najpopularnije knjige prema odabranom tagu</h1>
+    <ul>
+        {{ $topBooksByTag := .TopBooksByTag }} {{ range $topBooksByTag }}
+        <li>{{ .Book.Title }}</li>
+        {{ end }}
+    </ul>
+</body>
+
+</html>

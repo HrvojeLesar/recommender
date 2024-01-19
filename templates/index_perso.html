@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {{ template "header.html" . }}
+</head>
+
+<body>
+    <h1>Preporučene knjige</h1>
+    <ul>
+        {{ $recommendations := .BookRecommendations }} {{ range
+        $recommendations }}
+        <li>{{ .Title }}</li>
+        {{ end }}
+    </ul>
+</body>
+
+</html>
