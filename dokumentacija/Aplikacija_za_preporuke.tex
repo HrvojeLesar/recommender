@@ -95,7 +95,20 @@ Polustrukturirane baze podataka možemo podijeliti na četiri glavne vrste \cite
         i veze između različitih korisnika.
 \end{enumerate}
 
-\section{MongoDD}
+\section{MongoDB}
+
+MongoDB je polustrukturirana baza temeljena na dokumentima. Dokumenti su grupirani u kolekcije prema njihovoj strukturi.
+Dopušteno je spremanje dokumenta različitih struktura, no zbog boljih performansi preporuka je grupirati dokumente s 
+istom ili sličnom strukturom \cite{abramova2013nosql}. MongoDB koristi BSON kao format za spremanje dokumenata. BSON je kratica za Binary JSON.
+Svaki novi dokument je moguće identificirati poljem \_id, te je za svaku kolekciju automatski kreiran index preko \_id polja.
+Neke od najbitnijih karakteristika MongoDB-a su trajnost i moguće paralelno čitanje i pisanje podataka.
+Trajnost je omogućeno kroz kreiranje replika baze, MongoDB koristi master-slave (gospodar-rob) mehanizam za replikaciju.
+Omogućava definiranje jednog gospodara i jednog ili više robova. Gospodar je jedina replika kojoj je dozvoljeno pisanje i čitanje 
+dok robovi skuže samo kao sigurnosna kopija. U slučaju da se gospodar replika sruši, replika rob s najnovijim podacima je promovirana
+u novog gospodara. Sve replike su asinkrone što znači da izvršena ažuriranja nisu odmah vidlija na svim replikama.
+MongoDB postiže paralelno čitanje i pisanje podataka zaključavanjem podataka. Podaci koji se trenutno ažuriraju su zaključani
+kako nebi bili pročitani zastarjeli podaci ili kako se nebi dogodilo više upisa u isto vrijeme te više nebi bilo moguće
+odrediti valjanost upisanih podataka.
 
 
 \chapter{Razrada teme}
