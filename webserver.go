@@ -18,6 +18,8 @@ func StartWebserver(handler *handler.Handler) {
 	r.HandleFunc("/{userId}", handler.MyRatingsUpdate).Methods("POST")
 	r.HandleFunc("/{userId}/my-ratings", handler.MyRatings).Methods("GET")
 	r.HandleFunc("/{userId}/my-ratings", handler.MyRatingsUpdate).Methods("POST")
+	r.HandleFunc("/{userId}/search", handler.Search).Methods("GET")
+	r.HandleFunc("/{userId}/search", handler.MyRatingsUpdate).Methods("POST")
 
 	http.Handle("/", r)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))

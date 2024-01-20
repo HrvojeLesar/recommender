@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {{ template "header.html" . }}
+</head>
+
+<body>
+    {{ $books := .Books }}
+    <h1>Rezultati za ({{ .SearchTerm }}):</h1>
+    {{ template "book_bar.html" $books }}
+</body>
+
+</html>

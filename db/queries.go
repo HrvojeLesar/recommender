@@ -315,3 +315,29 @@ func (m *MongoInstance) Book(bookId int64) (*models.Book, error) {
 
 	return &book, nil
 }
+
+func (m *MongoInstance) Search(searchTerm string) ([]models.Book, error) {
+	booksCollection := m.database.Collection(BOOKSCOLLECTION)
+
+	booksCursor, err := booksCollection.Find(m.ctx, bson.D{{"title", bson.D{
+		{"$regex", searchTerm},
+		{"$options", "i"},
+	}}}, options.Find().SetLimit(100))
+	if err != nil {
+		return nil, err
+	}
+	defer booksCursor.Close(m.ctx)
+
+	books := make([]models.Book, 0, 10)
+	for booksCursor.Next(m.ctx) {
+		var book models.Book
+		err := booksCursor.Decode(&book)
+		if err != nil {
+			return nil, err
+		}
+
+		books = append(books, book)
+	}
+
+	return books, nil
+}

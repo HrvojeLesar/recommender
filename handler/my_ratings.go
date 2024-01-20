@@ -43,7 +43,7 @@ func (h *Handler) MyRatings(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) MyRatingsUpdate(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	rating, err := strconv.ParseInt(r.FormValue("rating"), 10, 64)
+	newRating, err := strconv.ParseInt(r.FormValue("rating"), 10, 64)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -63,17 +63,17 @@ func (h *Handler) MyRatingsUpdate(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Panicln(err)
 		}
-		err = h.globalInstances.Mongo.InsertRating(rating, userId, *book)
+		err = h.globalInstances.Mongo.InsertRating(newRating, userId, *book)
 		if err != nil {
 			log.Panicln(err)
 		}
-	} else if rating > 0 && rating <= 5 {
-		err := h.globalInstances.Mongo.UpdateRating(rating, userId, bookId)
+	} else if newRating > 0 && newRating <= 5 {
+		err := h.globalInstances.Mongo.UpdateRating(newRating, userId, bookId)
 		if err != nil {
 			log.Panicln(err)
 		}
-	} else if rating == 0 {
-		h.globalInstances.Mongo.RemoveRating(rating, userId, bookId)
+	} else if newRating == 0 {
+		h.globalInstances.Mongo.RemoveRating(newRating, userId, bookId)
 		if err != nil {
 			log.Panicln(err)
 		}
