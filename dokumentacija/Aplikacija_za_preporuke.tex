@@ -52,14 +52,50 @@ Načelna napomena o strukturi rada jest da se nazivi i struktura poglavlja obave
 Sadržajna preporuka je da u uvodu treba opisati što je tema završnog/diplomskog rada,
 zašto je tema značajna te koja je motivacija studenta/ studentice za odabir teme \cite{oraictolic2011AkademskoPismoStrategije}.
 
+\chapter{Polustrukturirane baze podataka}
 
+\section{Polustrukturirani podaci}
 
-\chapter{Metode i tehnike rada}
+Glavna ideja polustrukturiranih podataka je predstavljanje podataka kao vrstu strukture koja ima nalik na graf ili stablo.
+Iako su dopušteni ciklusi između vrhova grafa, općenito takvu vrstu grafa možemo nazivati stablima \cite{buneman1997semistructured}.
+Na slici \ref{fig:primjer_polustrukturiranih_podataka} je prikazan primjer modela podataka formaliziran u strukturu grafa.
+Bridovi grafa su označeni tipom podatka ili više apstraktnim tipom koji se dalje grana. Prolaskom kroz graf moguće je
+primijetiti da postoje dva različita načina prema kojima je opisan film. U prvom su glumci, filmska ekipa direktno nabrojeni,
+dok u drugom postoji granjanje na glumce i kreditirane glumce. Zadnja grana grafa opisuje TV seriju koja opet ima drugačiju
+strukturu u usporedbi s strukturom filmova.
 
-U ovom poglavlju treba opisati koje će metode i tehnike biti korištene pri razradi teme,
-kako su provedene istraživačke aktivnosti, koji su programski alati ili aplikacije korišteni.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{slike/graf_primjer.png}
+	\caption{Primjer polustrukturiranih podataka u obliku grafa \cite{buneman1997semistructured}}
+	\label{fig:primjer_polustrukturiranih_podataka}
+\end{figure}
 
-\lipsum[1-2]
+Polustrukturirani podaci su organizirani u sematičke entitete, ali nisu striktno u skladu s formalno strukturiranim strogim tipovima podataka.
+Konceptualni model polustrukturiranih podataka mora sadržavati nekoliko svojstava kao štu su reprezentacija nepravilnih i heterogenih struktura
+kao prikazanih na slici \ref{fig:primjer_polustrukturiranih_podataka}, hijerarhijske odnose uz nehijerarhijske vrste odnosa, kardinalnost,
+relacije n-niza, poredak i reprezentaciju mješovitog sadržaja \cite{ganguly2012evaluations}.
+
+\section{Vrste polustrukturiranih baza podataka}
+
+Polustrukturirane baze podataka možemo podijeliti na četiri glavne vrste \cite{abramova2013nosql}:
+
+\begin{enumerate}
+    \item Key-Value store (Pohrana ključeva i vrijednosti); Podaci se pohranjuju kao skup ključeva i vrijednosti.
+        Ključevi su jedinstveni te se pristupa podacima povezivanjem ključa s vrijednosti.
+        Vrijednosti ne moraju striktno biti informacije, mogu biti drugi ključevi.
+    \item Baze podataka temeljene na dokumentima; Mogu se definirati kao setovi ključeva i vrijednosti.
+        Svaki dokument je identificiran unikatnim ključem. Tip dokumenta je definiran prema znanim standardima
+        koji su večini slučajeva XML ili JSON. Pristup podacima moguć je korištenjem ključa ili određenih vrijednosti.
+    \item Column-family (Obitelj stupaca); Podaci su postavljeni u stupce tj. sama struktura podataka i organizacija podatak
+        se sastoji od stupaca super-stupaca, i obitelji stupaca. Struktura baze je definirana kroz super-stupce i obitelj stupca.
+        Novi stupci se mogu dodavati po potrebi. Pristup podacima je moguć naznačujući obitelj stupca, ključ, stupac što će
+        rezultirati dohvačanjem vrijednosti.
+    \item Graf baze podataka; Ova vrsta se koristi kad se podaci mogu prikazati kao graf, jedan primjer su društvene mreže
+        i veze između različitih korisnika.
+\end{enumerate}
+
+\section{MongoDD}
 
 
 \chapter{Razrada teme}
