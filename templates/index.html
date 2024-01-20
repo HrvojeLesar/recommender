@@ -8,7 +8,7 @@
 <body>
     <h1>Najpopularnije knjige</h1>
     {{ template "book_bar_average_rating.html" .TopBooks }}
-    <select onchange="selectOnChange(this)">
+    <select onchange="onTagChange(this)">
         {{ $selectedTag := .SelectedTag }} {{ $tags := .Tags }} {{ range
         $tags }}
         <option {{ if eq .Name $selectedTag }} selected {{ end }} value="{{ .Name }}">

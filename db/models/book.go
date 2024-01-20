@@ -1,6 +1,8 @@
 package models
 
-import "math"
+import (
+	"math"
+)
 
 type Book struct {
 	BookId                  int      `bson:"book_id"`
@@ -11,12 +13,13 @@ type Book struct {
 	Title                   string   `bson:"title"`
 	Genres                  []string `bson:"genres"`
 	Rating                  float64  `bson:"average_rating"`
+	Rating1                 float64  `bson:"ratings_1"`
 	ImageUrl                string   `bson:"image_url"`
 }
 
 type AverageBookRating struct {
-	Book          Book    `bson:"book"`
-	AverageRating float64 `bson:"averageRating"`
+	Book   Book    `bson:"book"`
+	Rating float64 `bson:"averageRating"`
 }
 
 type BookRating struct {

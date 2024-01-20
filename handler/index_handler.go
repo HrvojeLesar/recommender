@@ -15,6 +15,14 @@ type IndexData struct {
 }
 
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
+	data := h.resolveIndexData(r)
+	err := h.indexTemplate.Execute(w, data)
+	if err != nil {
+		log.Panicln(err)
+	}
+}
+
+func (h *Handler) resolveIndexData(r *http.Request) IndexData {
 	data := IndexData{
 		Tags: h.Tags,
 	}
@@ -34,8 +42,5 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 	}
 	data.TopBooksByTag = topBooksByTag
 
-	err = h.indexTemplate.Execute(w, data)
-	if err != nil {
-		panic(err)
-	}
+	return data
 }

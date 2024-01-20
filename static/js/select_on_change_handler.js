@@ -1,4 +1,4 @@
-function selectOnChange(selectObject) {
+function onTagChange(selectObject) {
     const selectedTag = selectObject.options[selectObject.selectedIndex].value;
     if (selectedTag) {
         const searchParams = new URLSearchParams(window.location.search);

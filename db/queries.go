@@ -71,6 +71,10 @@ func (m *MongoInstance) TopBooksByUserRating() ([]models.AverageBookRating, erro
 			return nil, err
 		}
 
+		if bookRating.Book.Rating1 == 0 {
+			continue
+		}
+
 		if len(books) < 30 {
 			books = append(books, bookRating)
 		} else {
@@ -153,6 +157,10 @@ func (m *MongoInstance) TopBooksByGenre(genre string) ([]models.AverageBookRatin
 			return nil, err
 		}
 
+		if bookRating.Book.Rating1 == 0 {
+			continue
+		}
+
 		if len(books) < 30 {
 			books = append(books, bookRating)
 		} else {
@@ -164,6 +172,47 @@ func (m *MongoInstance) TopBooksByGenre(genre string) ([]models.AverageBookRatin
 }
 
 func (m *MongoInstance) NearestNeighbour(userId int64) ([]models.Book, error) {
+	similarUsers, err := m.SimilarUsers(userId)
+	if err != nil {
+		return nil, err
+	}
+	return similarUsers.BookRecommendations(), nil
+}
+
+func (m *MongoInstance) Tags() ([]models.Tag, error) {
+	tagsCollection := m.database.Collection(TAGSCOLLECTION)
+
+	tagsCursor, err := tagsCollection.Find(m.ctx, bson.D{}, options.Find().SetSort(bson.D{{"tag_name", 1}}))
+	if err != nil {
+		return nil, err
+	}
+	defer tagsCursor.Close(m.ctx)
+
+	tags := make([]models.Tag, 0, 10)
+	for tagsCursor.Next(m.ctx) {
+		var tag models.Tag
+		if err := tagsCursor.Decode(&tag); err != nil {
+			return nil, err
+		}
+		tags = append(tags, tag)
+	}
+	return tags, nil
+}
+
+func (m *MongoInstance) MyRatings(userId int64) (*models.User, error) {
+	usersCollectionns := m.database.Collection(USERSCOLLECTION)
+
+	userResult := usersCollectionns.FindOne(m.ctx, bson.D{{"_id", userId}})
+	var user models.User
+	err := userResult.Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (m *MongoInstance) SimilarUsers(userId int64) (*models.SimilarUsers, error) {
 	usersCollection := m.database.Collection(USERSCOLLECTION)
 	var user models.User
 
@@ -192,25 +241,77 @@ func (m *MongoInstance) NearestNeighbour(userId int64) ([]models.Book, error) {
 
 		similarUsers.TryAdd(otherUser)
 	}
-	return similarUsers.BookRecommendations(), nil
+
+	return &similarUsers, nil
 }
 
-func (m *MongoInstance) Tags() ([]models.Tag, error) {
-	tagsCollection := m.database.Collection(TAGSCOLLECTION)
+func (m *MongoInstance) InsertRating(newRating int64, userId int64, book models.Book) error {
+	usersCollection := m.database.Collection(USERSCOLLECTION)
+	book.Rating1 = 0
 
-	tagsCursor, err := tagsCollection.Find(m.ctx, bson.D{}, options.Find().SetSort(bson.D{{"tag_name", 1}}))
+	_, err := usersCollection.UpdateOne(m.ctx, bson.D{{"_id", userId}}, bson.D{
+		{"$push", bson.D{
+			{"book_ratings", bson.D{
+				{"rating", newRating},
+				{"book", book},
+			}},
+		}},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *MongoInstance) UpdateRating(newRating int64, userId int64, bookId int64) error {
+	usersCollection := m.database.Collection(USERSCOLLECTION)
+
+	arrayFilters := options.ArrayFilters{
+		Filters: []interface{}{bson.D{
+			{"x.book.book_id", bookId},
+		}},
+	}
+
+	_, err := usersCollection.UpdateOne(m.ctx, bson.D{{"_id", userId}}, bson.D{
+		{"$set", bson.D{
+			{"book_ratings.$[x].rating", newRating},
+		}},
+	}, options.Update().SetArrayFilters(arrayFilters))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *MongoInstance) RemoveRating(newRating int64, userId int64, bookId int64) error {
+	usersCollection := m.database.Collection(USERSCOLLECTION)
+
+	_, err := usersCollection.UpdateOne(m.ctx, bson.D{{"_id", userId}}, bson.D{
+		{"$pull", bson.D{
+			{"book_ratings", bson.D{
+				{"book.book_id", bookId},
+			}},
+		}},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *MongoInstance) Book(bookId int64) (*models.Book, error) {
+	booksCollection := m.database.Collection(BOOKSCOLLECTION)
+
+	var book models.Book
+
+	result := booksCollection.FindOne(m.ctx, bson.D{{"book_id", bookId}})
+	err := result.Decode(&book)
 	if err != nil {
 		return nil, err
 	}
-	defer tagsCursor.Close(m.ctx)
 
-	tags := make([]models.Tag, 0, 10)
-	for tagsCursor.Next(m.ctx) {
-		var tag models.Tag
-		if err := tagsCursor.Decode(&tag); err != nil {
-			return nil, err
-		}
-		tags = append(tags, tag)
-	}
-	return tags, nil
+	return &book, nil
 }

@@ -3,11 +3,11 @@
     {{ range $recommendations }}
     <div class="book-item">
         <div class="book-image">
-            <img src="{{ .Book.ImageUrl }}" alt="{{ .Book.Title }}" />
+            <img src="{{ .Book.Book.ImageUrl }}" alt="{{ .Book.Book.Title }}" />
         </div>
-        <div class="book-title">{{ .Book.Title }}</div>
+        <div class="book-title">{{ .Book.Book.Title }}</div>
         <div class="book-author-container">
-            {{ range .Book.Authors }}
+            {{ range .Book.Book.Authors }}
             <div class="book-author">{{ . }}</div>
             {{ end }}
         </div>
@@ -37,7 +37,7 @@
                     5
                 </option>
             </select>
-            <input type="hidden" name="bookId" value="{{ .Book.BookId }}" />
+            <input type="hidden" name="bookId" value="{{ .Book.Book.BookId }}" />
             {{ if eq .UserRating 0 }}
             <input type="hidden" name="new" value="1" />
             {{ end }}

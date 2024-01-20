@@ -7,8 +7,27 @@
 
 <body>
     {{ $recommendations := .BookRecommendations}}
-    <h1>Preporučene knjige</h1>
+    <h1>
+        Preporučene knjige (Kolaborativno filtriranje) ({{ len
+        $recommendations}})
+    </h1>
     {{ template "book_bar.html" $recommendations }}
+    <h1>Najpopularnije knjige ({{ len .IndexData.TopBooks }})</h1>
+    {{ template "book_bar_index_average_rating.html" .IndexData.TopBooks }}
+    <select onchange="onTagChange(this)">
+        {{ $selectedTag := .IndexData.SelectedTag }} {{ $tags :=
+        .IndexData.Tags }} {{ range $tags }}
+        <option {{ if eq .Name $selectedTag }} selected {{ end }} value="{{ .Name }}">
+            {{ .Name }}
+        </option>
+        {{ end }}
+    </select>
+    <h1>
+        Najpopularnije knjige prema odabranom tagu ({{ len
+        .IndexData.TopBooksByTag }})
+    </h1>
+    {{ template "book_bar_index_average_rating.html"
+    .IndexData.TopBooksByTag }}
 </body>
 
 </html>

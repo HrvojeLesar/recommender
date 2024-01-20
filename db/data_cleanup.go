@@ -85,3 +85,12 @@ func (m *MongoInstance) updateBooks(ids []int, tag Tag) {
 	}
 	log.Println(result.ModifiedCount)
 }
+
+func (m *MongoInstance) updateUserBooksRating() {
+	usersCollection := m.database.Collection("users")
+	usersCursor, err := usersCollection.Find(m.ctx, bson.D{})
+	if err != nil {
+		log.Panicln(err)
+	}
+	defer usersCursor.Close(m.ctx)
+}

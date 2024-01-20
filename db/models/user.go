@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"sort"
 )
 
@@ -68,13 +67,9 @@ func (su *SimilarUsers) sortOtherUsers() {
 	})
 }
 
-func (su *SimilarUsers) OtherUsers() []UserSimilarity {
-	return su.otherUsers
-}
-
-func (su *SimilarUsers) MostSimilarUser() {
+func (su *SimilarUsers) SimilarUsers() []UserSimilarity {
 	su.sortOtherUsers()
-	log.Println(su.otherUsers[0].User.Id)
+    return su.otherUsers[:20]
 }
 
 func (su *SimilarUsers) BookRecommendations() []Book {
@@ -99,18 +94,26 @@ func (su *SimilarUsers) isBookRatedByUser(bookId int) bool {
 func (su *SimilarUsers) filterRecommendations() []Book {
 	su.sortOtherUsers()
 
-	recommendations := make([]Book, 0, RECOMMENDATIONLIMIT)
+	recommendationsMap := make(map[string]Book)
 	for i := range su.otherUsers {
 		otherUser := &su.otherUsers[i]
 		for j := range otherUser.User.BookRatings {
 			bookRating := &otherUser.User.BookRatings[j]
 			if !su.isBookRatedByUser(bookRating.Book.BookId) {
-				recommendations = append(recommendations, bookRating.Book)
-				if len(recommendations) == RECOMMENDATIONLIMIT {
-					return recommendations
+				if _, ok := recommendationsMap[bookRating.Book.Title]; !ok {
+					recommendationsMap[bookRating.Book.Title] = bookRating.Book
+					if len(recommendationsMap) == RECOMMENDATIONLIMIT {
+						goto endLoop
+					}
 				}
 			}
 		}
+	}
+endLoop:
+
+	recommendations := make([]Book, 0, len(recommendationsMap))
+	for _, book := range recommendationsMap {
+		recommendations = append(recommendations, book)
 	}
 
 	return recommendations

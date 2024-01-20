@@ -1,4 +1,4 @@
-{{ $recommendations := . }}
+{{ $recommendations := .User.BookRatings }} {{ $user := .User }}
 <div class="book-container">
     {{ range $recommendations }}
     <div class="book-item">
@@ -11,36 +11,27 @@
             <div class="book-author">{{ . }}</div>
             {{ end }}
         </div>
-        <div class="rating">{{ .Book.Rating }}</div>
         <form method="post">
             <select name="rating" onchange="this.form.submit()">
-                {{ if gt .UserRating 0 }}
-                <option value="0" {{ if eq .UserRating 0 }} selected {{ end }}>
-                    Brisanje ocjene
-                </option>
-                {{ else }}
-                <option value="0">Neocjenjeno</option>
-                {{ end }}
-                <option value="1" {{ if eq .UserRating 1 }} selected {{ end }}>
+                <option value="0">Brisanje ocjene</option>
+                <option value="1" {{ if eq .Rating 1 }} selected {{ end }}>
                     1
                 </option>
-                <option value="2" {{ if eq .UserRating 2 }} selected {{ end }}>
+                <option value="2" {{ if eq .Rating 2 }} selected {{ end }}>
                     2
                 </option>
-                <option value="3" {{ if eq .UserRating 3 }} selected {{ end }}>
+                <option value="3" {{ if eq .Rating 3 }} selected {{ end }}>
                     3
                 </option>
-                <option value="4" {{ if eq .UserRating 4 }} selected {{ end }}>
+                <option value="4" {{ if eq .Rating 4 }} selected {{ end }}>
                     4
                 </option>
-                <option value="5" {{ if eq .UserRating 5 }} selected {{ end }}>
+                <option value="5" {{ if eq .Rating 5 }} selected {{ end }}>
                     5
                 </option>
             </select>
+            <input type="hidden" name="userId" value="{{ $user.Id }}" />
             <input type="hidden" name="bookId" value="{{ .Book.BookId }}" />
-            {{ if eq .UserRating 0 }}
-            <input type="hidden" name="new" value="1" />
-            {{ end }}
         </form>
     </div>
     {{ end }}
