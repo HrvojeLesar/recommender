@@ -6,6 +6,7 @@
 </head>
 
 <body>
+    {{ template "navbar.html" .UserId }}
     {{ $recommendations := .BookRecommendations}}
     <h1>
         Preporučene knjige (Kolaborativno filtriranje) ({{ len

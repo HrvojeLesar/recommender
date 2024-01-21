@@ -6,6 +6,7 @@
 </head>
 
 <body>
+    {{ template "navbar.html" .UserId }}
     {{ $books := .Books }}
     <h1>Rezultati za ({{ .SearchTerm }}):</h1>
     {{ template "book_bar.html" $books }}

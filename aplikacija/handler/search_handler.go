@@ -9,6 +9,7 @@ import (
 )
 
 type SearchData struct {
+	UserId     int64
 	SearchTerm string
 	Books      []bookRecommendation
 }
@@ -20,7 +21,10 @@ func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Panicln(err)
 	}
-	searchTerm := r.URL.Query().Get("query")
+	searchTerm := r.FormValue("query")
+	if len(searchTerm) != 0 {
+		searchTerm = r.URL.Query().Get("query")
+	}
 
 	usersRatings, err := h.globalInstances.Mongo.MyRatings(userId)
 	if err != nil {
@@ -35,6 +39,7 @@ func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
 	bookRecommendations, _ := integrateUserRatings(usersRatings, books, IndexData{})
 
 	data := SearchData{
+		UserId:     userId,
 		Books:      bookRecommendations,
 		SearchTerm: searchTerm,
 	}

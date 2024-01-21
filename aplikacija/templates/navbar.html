@@ -1,0 +1,14 @@
+{{ $userId := . }}
+<div class="navbar">
+    <div class="navbar-left">
+        <a href="/{{ $userId }}">Preporuke</a>
+        <a href="/{{ $userId }}/my-ratings">Moje ocjene</a>
+    </div>
+    <div class="navbar-right">
+        <form method="get" action="/{{ $userId }}/search">
+            <label>Pretraživanje:</label>
+            <input type="text" name="query" />
+            <input type="submit" value="Pretraži" />
+        </form>
+    </div>
+</div>

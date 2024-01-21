@@ -65,3 +65,17 @@ a:hover {
 .book-author {
     text-decoration: underline;
 }
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar-left {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.navbar-right {
+    display: flex;
+}

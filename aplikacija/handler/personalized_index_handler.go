@@ -10,6 +10,7 @@ import (
 )
 
 type PersonalizedIndexData struct {
+	UserId              int64
 	BookRecommendations []bookRecommendation
 	IndexData           indexDataWithUserRatings
 }
@@ -34,6 +35,7 @@ func (h *Handler) PersonalizedIndex(w http.ResponseWriter, r *http.Request) {
 	bookRecommendations, indexData := integrateUserRatings(usersRatings, books, h.resolveIndexData(r))
 
 	data := PersonalizedIndexData{
+		UserId:              userId,
 		BookRecommendations: bookRecommendations,
 		IndexData:           indexData,
 	}

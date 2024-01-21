@@ -6,13 +6,16 @@
 </head>
 
 <body>
+    {{ template "navbar.html" .UserId }}
+    <button onclick="onSimilarUsersChange()">
+        Prikaz/Skrivanje sličnih korisnika
+    </button>
     {{ $myRatings := .User.BookRatings }}
     <h1>Moje ocjene knjiga</h1>
-    {{ template "book_bar_my_ratings.html" . }}
-    {{ range .SimilarUsers }}
-        <h2>Korisnik ID: {{ .User.Id }} ({{ .SimilarityScore }})</h2>
-        {{ template "book_bar_average_rating.html" .User.BookRatings }}
-    {{ end }}
+    {{ template "book_bar_my_ratings.html" . }} {{ range .SimilarUsers }}
+    <h2>Korisnik ID: {{ .User.Id }} ({{ .SimilarityScore }})</h2>
+    {{ template "book_bar_average_rating.html" .User.BookRatings }} {{ end
+    }}
 </body>
 
 </html>

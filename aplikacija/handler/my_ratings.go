@@ -10,6 +10,7 @@ import (
 )
 
 type MyRatings struct {
+	UserId       int64
 	User         *models.User
 	SimilarUsers []models.UserSimilarity
 }
@@ -35,7 +36,7 @@ func (h *Handler) MyRatings(w http.ResponseWriter, r *http.Request) {
 		similarUsers = users.SimilarUsers()
 	}
 
-	err = h.myRatingsTemplate.Execute(w, MyRatings{User: userRatings, SimilarUsers: similarUsers})
+	err = h.myRatingsTemplate.Execute(w, MyRatings{User: userRatings, SimilarUsers: similarUsers, UserId: userId})
 	if err != nil {
 		log.Panicln(err)
 	}
