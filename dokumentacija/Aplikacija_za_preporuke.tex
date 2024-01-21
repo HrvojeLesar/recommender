@@ -229,17 +229,129 @@ Na web stranici postoji nekoliko vrsta preporuka:
 Korisnici imaju mogućnost dodavanja, izmjene, brisanja ocjena knjigama, time potencijalno mijenjanju preporuke za "slične" korisnike
 i utječu na prosječnu ocjenu preporuka koje su određene prema najvišim ocjenama.
 
-\subsection{Kolaborativno filtriranje}
+U nastavku svi implementirani MongoDB upiti će zbog lakšeg čitanja biti pretvoreni u upite koji se mogu izvršiti u \texttt{mongosh}.
+
 \subsection{Najbolje ocjenjene knjige}
+
+Jedan od načina na koji se preporučuju knjige je pronalaženje knjiga s najboljim ocjenama korisnika.
+Za ovaj scenarij imamo dva slučajeva, preporuke knjiga koje imaju najbolje prosječne ocjene korisnika
+i preporuke knjiga koje imaju najbolje prosjčne ocjene korisnika u određenom žanru.
+
+Upit koji se postavlja bazi podataka za dohvaćanje knjiga je sljedeći:
+\begin{minted}[samepage]{javascript}
+    db.users.agreggate([
+        { $unwind: "$book_ratings" },
+        { $group: { _id: "$book_ratings.book", totalRatings: { $sum: "$book_ratings.rating"}, count: { $sum: 1 } } },
+        { $project: { _id: "$_id._id", book: "$_id", totalRating: 1, count: 1, averageRating: { $divide: ["$totalRating", "$count"] } } },
+        { $sort: { averageRating: -1 } },
+        { $project: { _id: "$_id._id", book: "$_id", totalRating: 1, count: 1, averageRating: { $round: ["$averageRating", 2] } } },
+    ])
+\end{minted}
+\captionof{listing}{Upit za najbolje ocjenjene knjige}
+\label{lst:najbolje_ocjene_knjiga}
+
+Upit prolazi kroz kolekciju \texttt{users} te prvo za svakoga korisnika listu njihovih pretvara u jednu listu koja se nakon toga
+grupira prema knjigama, izračunava se ukupna ocjena i broj danih ocjena. Zatrim treći korak \texttt{project} prikazuje polja
+objekta koja želimo prikazati i kreira prosječnu ocjenu za svaku knjigu. Knjige su sortirane silazno prema prosječnoj ocjeni
+te se prosječna ocjena zaokružuje na dvije decimale.
+
+\subsection{Kolaborativno filtriranje}
+
+Kolaborativno filtriranje je implementirano kroz algoritam K-najbližih susjeda (KNN - k-nearest neighbours).
+Prvo odabiremo korisnika za kojega želimo generirati preporuke potom radimo upit u bazu za sve korisnike koji nisu taj korisnik.
+Za svakog korisnika određujemo vrijednost koja označava kako je sličan odabranom korisniku.
+To se radi na način da ako korisnik ima ocjenjene knjige koje ima i odabrani korisnik dobiva brojčanu vrijednost ovisno o
+sličnosti ocjena. Tako će korisnik koji ima jednake ocjene knjiga kao odabrani imati vrijednost \texttt{1.0} što bi označavalo
+da su korisnici jednaki tj. pretposavljamo da vole jednake knjige, dok vrijednost od \texttt{0.0} označava da se korisnici uopče
+ne podudaraju. Poslije izračuna vrijednosti korisnici se sortiraju silazno prema izračunatim vrijednostima te se za preporuke
+uzimaju knjige koje nisu ocjenjene od odabranog korisnika, a jesu među ocjenjenim knjigama najsličnijih.
+
 \subsection{Dodavanje, brisanje, promjena ocjena}
+
+Što se tiće dodavanja, brisanja i promjena ocjena koriste se sljedeći upiti:
+\begin{minted}[samepage]{javascript}
+    db.users.updateOne({ _id: userId }, { $push: { book_ratings: { rating: newRating, book: book } } })
+\end{minted}
+\captionof{listing}{Dodavanje ocjene knjizi}
+\label{lst:dodavanje_ocjene_knjizi}
+
+U isječku koda \ref{lst:dodavanje_ocjene_knjizi} \texttt{userId}, \texttt{newRating} i \texttt{book} su varijable koje
+se prosljeđuju u upit. Sam upit za dodavanje pronalazi korisnika s vrijednošću \texttt{\_id} jednakom \texttt{userId} te u
+listu \texttt{book\_ratings} dodaje knjigu i ocjenu.
+
+\begin{minted}[samepage]{javascript}
+    db.users.updateOne({ _id: userId }, { $set: { "book_ratings.$[x].rating": newRating } }, { arrayFilters: [ { "x.book.book_id": bookId } ] })
+\end{minted}
+\captionof{listing}{Promjena ocjene}
+\label{lst:promjena_ocjene}
+
+U isječku koda \ref{lst:promjena_ocjene} se koriste \texttt{arrayFilters} kako bi se odabrao i ažurirao točan zapis u listi ocjena.
+Opcija \texttt{arrayFilters} postavlja \texttt{x} kao identifikator indeksa liste na kojemu se nalazi knjiga s \texttt{bookId} te se u
+vrijeme pokretanja upita ažurira samo to polje liste.
+
+Zadnji upit je brisanje ocjene. Brisanje se radi korištenjem \texttt{\$pull} naredbe koja će iz liste maknuti zapise koji zadovoljavaju zadne uvjete.
+\begin{minted}[samepage]{javascript}
+    db.users.updateOne({ _id: userId }, { $pull: { book_ratings: { "book.book_id": bookId } } } )
+\end{minted}
+\captionof{listing}{Promjena ocjene}
+\label{lst:brisanje_ocjene}
 
 \chapter{Primjeri korištenja}
 
+Slika \ref{fig:najpopulranije_knjige} prikazuje neke od knjiga koje su dane kao preporuke prema najboljim ocjenama.
+Ocjene knjiga su vidljive ispod naslova knjige i autora.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{slike/najpop.png}
+	\caption{Najpopularnije knjige}
+	\label{fig:najpopulranije_knjige}
+\end{figure}
+
+Slika \ref{fig:prema_tagu} prikazuje neke od knjiga koje su dane kao preporuke prema najboljim ocjenama uz odabrani tag tj. žanr.
+Prikazane su samo knjige koje imaju dodijeljen odabrani žanr \texttt{high-fantasy}.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{slike/prema_tagu.png}
+	\caption{Najpopularnije knjige prema odabranom tagu}
+	\label{fig:prema_tagu}
+\end{figure}
+
+Slika \ref{fig:slicni} prikazuje korisnika koji ima najsličnije ocjene knjiga trenutnome.
+Možemo primijetiti da oba korisnika imaju dane ocjene za knjige The Da Vinci Code, Memoirs of a Geisha i druge.
+Neke od ocjena su također jednake što više pridonosi sličnosti korisnika. U zagradi pored Korisnik ID: 127 je zapisan
+broj koji odgovara sličnosti između ova dva korisnika.
+\pagebreak
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{slike/slicni_korisnik_15.png}
+	\caption{Prikaz slicnog korisnika trenutnom odabranom}
+	\label{fig:slicni}
+\end{figure}
+
+Slika \ref{fig:preporuke} prikazuje preporuke za odabranog korisnika na slici \ref{fig:slicni}.
+Sve preporuke su uvijek knjige koje taj korisnik nije ocijenio i nalaze se u skupu knjiga koje su ocijenili
+slični korisnici.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{slike/preporuke.png}
+	\caption{Preporuke}
+	\label{fig:preporuke}
+\end{figure}
+
+Slika \ref{fig:promjena_ocjene} sadrži prikaz načina promjene ocjene.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{slike/promjena_ocjene.png}
+	\caption{Promjena, brisanje ocjene}
+	\label{fig:promjena_ocjene}
+\end{figure}
+
 \chapter{Zaključak}
-
-Ovdje treba sažeto rezimirati najvažnije rezultate razrade teme rada. Potrebno je sažeto opisati što je predmet rada \cite{copeland2020ArtificialIntelligence}, koje su metode, tehnike, programski alati ili aplikacije korištene u razradi rada te koje su pretpostavke dokazane, a koje opovrgnute. Sadržajno, ono što se u uvodu rada najavljuje i kasnije je obuhvaćeno u samom radu, moralo bi biti opisano u zaključnom dijelu kroz rezultate rada.
-
-\lipsum[1-2]
 
 \makebackmatter
 
