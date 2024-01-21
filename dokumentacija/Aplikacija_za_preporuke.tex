@@ -42,7 +42,7 @@
 Kroz projekt će biti teoretski obrađene polustrukturirane baze podataka, polustrukturirani podaci, jedna od 
 često korištenih polustrukturiranih baza podataka MongoDB i teoretske osnove sustava za preporuke.
 
-Cilje rada je implementirati aplikaciju za preporuke knjiga. Ovaj cilj će se postiči korištenjem programskog
+Cilj rada je implementirati aplikaciju za preporuke knjiga. Ovaj cilj će se postići korištenjem programskog
 jezika \texttt{Go} u kojemu će se izrađivati web aplikacija. Aplikacija mora imati mogućnost komunikacije
 s bazom podataka MongoDB i način za postavljanje upita. Odabran je programski jezik \texttt{Go} zbog relativne
 jednostavnosti jezika i mogućnosti brze iteracije i izrade aplikacija, također ima vrlo dobru podršku za web.
@@ -60,7 +60,7 @@ Iako su dopušteni ciklusi između vrhova grafa, općenito takvu vrstu grafa mo�
 Na slici \ref{fig:primjer_polustrukturiranih_podataka} je prikazan primjer modela podataka formaliziran u strukturu grafa.
 Bridovi grafa su označeni tipom podatka ili više apstraktnim tipom koji se dalje grana. Prolaskom kroz graf moguće je
 primijetiti da postoje dva različita načina prema kojima je opisan film. U prvom su glumci, filmska ekipa direktno nabrojeni,
-dok u drugom postoji granjanje na glumce i kreditirane glumce. Zadnja grana grafa opisuje TV seriju koja opet ima drugačiju
+dok u drugom postoji grananje na glumce i kreditirane glumce. Zadnja grana grafa opisuje TV seriju koja opet ima drugačiju
 strukturu u usporedbi s strukturom filmova.
 
 \begin{figure}[h!]
@@ -70,8 +70,8 @@ strukturu u usporedbi s strukturom filmova.
 	\label{fig:primjer_polustrukturiranih_podataka}
 \end{figure}
 
-Polustrukturirani podaci su organizirani u sematičke entitete, ali nisu striktno u skladu s formalno strukturiranim strogim tipovima podataka.
-Konceptualni model polustrukturiranih podataka mora sadržavati nekoliko svojstava kao štu su reprezentacija nepravilnih i heterogenih struktura
+Polustrukturirani podaci su organizirani u semantičke entitete, ali nisu striktno u skladu s formalno strukturiranim strogim tipovima podataka.
+Konceptualni model polustrukturiranih podataka mora sadržavati nekoliko svojstava kao što su reprezentacija nepravilnih i heterogenih struktura
 kao prikazanih na slici \ref{fig:primjer_polustrukturiranih_podataka}, hijerarhijske odnose uz nehijerarhijske vrste odnosa, kardinalnost,
 relacije n-niza, poredak i reprezentaciju mješovitog sadržaja \cite{ganguly2012evaluations}.
 
@@ -85,11 +85,11 @@ Polustrukturirane baze podataka možemo podijeliti na četiri glavne vrste \cite
 	      Vrijednosti ne moraju striktno biti informacije, mogu biti drugi ključevi.
 	\item Baze podataka temeljene na dokumentima; Mogu se definirati kao setovi ključeva i vrijednosti.
 	      Svaki dokument je identificiran unikatnim ključem. Tip dokumenta je definiran prema znanim standardima
-	      koji su večini slučajeva XML ili JSON. Pristup podacima moguć je korištenjem ključa ili određenih vrijednosti.
+	      koji su većini slučajeva XML ili JSON. Pristup podacima moguć je korištenjem ključa ili određenih vrijednosti.
 	\item Column-family (Obitelj stupaca); Podaci su postavljeni u stupce tj. sama struktura podataka i organizacija podatak
 	      se sastoji od stupaca super-stupaca, i obitelji stupaca. Struktura baze je definirana kroz super-stupce i obitelj stupca.
 	      Novi stupci se mogu dodavati po potrebi. Pristup podacima je moguć naznačujući obitelj stupca, ključ, stupac što će
-	      rezultirati dohvačanjem vrijednosti.
+	      rezultirati dohvaćanjem vrijednosti.
 	\item Graf baze podataka; Ova vrsta se koristi kad se podaci mogu prikazati kao graf, jedan primjer su društvene mreže
 	      i veze između različitih korisnika.
 \end{enumerate}
@@ -104,8 +104,8 @@ Svaki novi dokument je moguće identificirati poljem \_id, te je za svaku kolekc
 Neke od najbitnijih karakteristika MongoDB-a su trajnost i moguće paralelno čitanje i pisanje podataka.
 Trajnost je omogućeno kroz kreiranje replika baze, MongoDB koristi master-slave (gospodar-rob) mehanizam za replikaciju.
 Omogućava definiranje jednog gospodara i jednog ili više robova. Gospodar je jedina replika kojoj je dozvoljeno pisanje i čitanje
-dok robovi skuže samo kao sigurnosna kopija. U slučaju da se gospodar replika sruši, replika rob s najnovijim podacima je promovirana
-u novog gospodara. Sve replike su asinkrone što znači da izvršena ažuriranja nisu odmah vidlija na svim replikama.
+dok robovi služe samo kao sigurnosna kopija. U slučaju da se gospodar replika sruši, replika rob s najnovijim podacima je promovirana
+u novog gospodara. Sve replike su asinkrone što znači da izvršena ažuriranja nisu odmah vidljiva na svim replikama.
 MongoDB postiže paralelno čitanje i pisanje podataka zaključavanjem podataka. Podaci koji se trenutno ažuriraju su zaključani
 kako nebi bili pročitani zastarjeli podaci ili kako se nebi dogodilo više upisa u isto vrijeme te više nebi bilo moguće
 odrediti valjanost upisanih podataka.
@@ -120,9 +120,9 @@ srodnost između korisnika i stavka koje se mogu koristiti za identifikaciju pod
 
 Načini pristupa rješavanju problema preporuka moguće je kategorizirati u nekoliko glavnih kategorija \cite{lu2012recommender}:
 \begin{enumerate}
-	\item Kolaborativno filtriranje; Kolaborativno filtriranje radi na principu prikuplanja povratnih informacija od korisnika.
+	\item Kolaborativno filtriranje; Kolaborativno filtriranje radi na principu prikupljanja povratnih informacija od korisnika.
 	      Povratne informacije su uglavnom u obliku ocjena za stavke u određenoj domeni. Iskorištavanjem sličnosti u ponašanju
-	      ocjenjivača se određuje manji broj korisnika kojima kojima je moguće preporučiti neku stavku.
+	      ocjenjivača se određuje manji broj korisnika kojima je moguće preporučiti neku stavku.
 	\item Preporuke temeljene na sadržaju; Daju preporuke uspoređujući prikaze opisa sadržaja koji opisuju neku stavku s
 	      prikazima sadržaja koji zanimaju korisnika.
 	\item Hibridni pristupi; Pokušava kombinirati kolaborativno filtriranje i preporuke temeljene na sadržaju kako bi
@@ -150,7 +150,7 @@ Kolekcije kreirane importiranjem podataka imaju nazive \texttt{tags}, \texttt{ra
 
 \section{Pretvorba podataka}
 
-Sve navedene nardebe moguće je pokrenuti preko mongo shella u bazi podataka koja ima importiran prije definiran skup podataka.
+Sve navedene naredbe moguće je pokrenuti preko mongo shella u bazi podataka koja ima importiran prije definiran skup podataka.
 Pretvorba podataka započinje smanjivanjem dostupnih broja tagova, tj. korištenjem samo onih najpopularnijih. Pošto su tagovi iz izvornog
 skupa podataka definirani od strane korisnika mogu imati vrlo različite nazive i imati različita značenja za korisnike, time bi
 najpopularniji tagovi morali filtrirati one manje korisne.
@@ -188,7 +188,7 @@ sa tagom tj. žanrom koji pripada knjizi.
 \label{lst:zanrovi}
 
 Zadnji korak agregiranje korisnika i njihovih ocjena knjiga u jednu kolekciju. U ovom koraku se svakom korisniku
-dodijeljuje skup knjiga koje su ocjenili.
+dodjeljuje skup knjiga koje su ocijenili.
 
 \begin{minted}[samepage]{javascript}
     db.ratings.agreggate([
@@ -201,7 +201,7 @@ dodijeljuje skup knjiga koje su ocjenili.
 \captionof{listing}{Dodavanje žanrova knjigama}
 \label{lst:korisnici}
 
-Završne kolekcije u bazi se mogu reprezenrirati kao što je prikazano na sljedećoj slici \ref{fig:izvedene_kolekcije}.
+Završne kolekcije u bazi se mogu reprezentirati kao što je prikazano na sljedećoj slici \ref{fig:izvedene_kolekcije}.
 Vidljivo je da su napravljene tri kolekcije \texttt{books}, \texttt{users} i \texttt{most\_popular\_tags}.
 Kolekcija \texttt{books} sadržava knjige i ima na novo dodano polje \texttt{genres} što je lista žanrova knjige.
 Kolekcija \texttt{users} su korisnici, identificirani samo svojim id-om, te svaki korisnik ima listu knjiga koje je
@@ -218,7 +218,7 @@ ocijenio, svaki element liste je ocjena i cijeli zapis ocjenjene knjige.
 \section{Implementacija}
 
 Sustav je implementiran u programskom jeziku \texttt{Go}. Za prikaz preporuka kreiran je web poslužitelj koji poslužuje web stranicu sa preporukama za
-određenog korisnika. Konkretno se preporućuju knjige. Aplikacija za komunikacijom s MongoDB koristi Mongo Driver biblioteku.
+određenog korisnika. Konkretno se preporučuju knjige. Aplikacija za komunikacijom s MongoDB koristi Mongo Driver biblioteku.
 Na web stranici postoji nekoliko vrsta preporuka:
 \begin{itemize}
 	\item preporuke temeljene na kolaborativnom filtriranju,
@@ -234,7 +234,7 @@ U nastavku svi implementirani MongoDB upiti će zbog lakšeg čitanja biti pretv
 
 Jedan od načina na koji se preporučuju knjige je pronalaženje knjiga s najboljim ocjenama korisnika.
 Za ovaj scenarij imamo dva slučajeva, preporuke knjiga koje imaju najbolje prosječne ocjene korisnika
-i preporuke knjiga koje imaju najbolje prosjčne ocjene korisnika u određenom žanru.
+i preporuke knjiga koje imaju najbolje prosječne ocjene korisnika u određenom žanru.
 
 Upit koji se postavlja bazi podataka za dohvaćanje knjiga je sljedeći:
 \begin{minted}[samepage]{javascript}
@@ -250,7 +250,7 @@ Upit koji se postavlja bazi podataka za dohvaćanje knjiga je sljedeći:
 \label{lst:najbolje_ocjene_knjiga}
 
 Upit prolazi kroz kolekciju \texttt{users} te prvo za svakoga korisnika listu njihovih pretvara u jednu listu koja se nakon toga
-grupira prema knjigama, izračunava se ukupna ocjena i broj danih ocjena. Zatrim treći korak \texttt{project} prikazuje polja
+grupira prema knjigama, izračunava se ukupna ocjena i broj danih ocjena. Zatim treći korak \texttt{project} prikazuje polja
 objekta koja želimo prikazati i kreira prosječnu ocjenu za svaku knjigu. Knjige su sortirane silazno prema prosječnoj ocjeni
 te se prosječna ocjena zaokružuje na dvije decimale.
 
@@ -261,7 +261,7 @@ Prvo odabiremo korisnika za kojega želimo generirati preporuke potom radimo upi
 Za svakog korisnika određujemo vrijednost koja označava kako je sličan odabranom korisniku.
 To se radi na način da ako korisnik ima ocjenjene knjige koje ima i odabrani korisnik dobiva brojčanu vrijednost ovisno o
 sličnosti ocjena. Tako će korisnik koji ima jednake ocjene knjiga kao odabrani imati vrijednost \texttt{1.0} što bi označavalo
-da su korisnici jednaki tj. pretposavljamo da vole jednake knjige, dok vrijednost od \texttt{0.0} označava da se korisnici uopče
+da su korisnici jednaki tj. pretpostavljamo da vole jednake knjige, dok vrijednost od \texttt{0.0} označava da se korisnici uopće
 ne podudaraju. Poslije izračuna vrijednosti korisnici se sortiraju silazno prema izračunatim vrijednostima te se za preporuke
 uzimaju knjige koje nisu ocjenjene od odabranog korisnika, a jesu među ocjenjenim knjigama najsličnijih.
 
@@ -288,7 +288,7 @@ U isječku koda \ref{lst:promjena_ocjene} se koriste \texttt{arrayFilters} kako 
 Opcija \texttt{arrayFilters} postavlja \texttt{x} kao identifikator indeksa liste na kojemu se nalazi knjiga s \texttt{bookId} te se u
 vrijeme pokretanja upita ažurira samo to polje liste.
 
-Zadnji upit je brisanje ocjene. Brisanje se radi korištenjem \texttt{\$pull} naredbe koja će iz liste maknuti zapise koji zadovoljavaju zadne uvjete.
+Zadnji upit je brisanje ocjene. Brisanje se radi korištenjem \texttt{\$pull} naredbe koja će iz liste maknuti zapise koji zadovoljavaju zadane uvjete.
 \begin{minted}[samepage]{javascript}
     db.users.updateOne({ _id: userId }, { $pull: { book_ratings: { "book.book_id": bookId } } } )
 \end{minted}
@@ -363,8 +363,8 @@ Za implementaciju aplikacije korišten je programski jezik \texttt{Go}. Odabran 
 razvijanja aplikacija. Ima dobru podršku za komunikaciju s bazom MongoDB.
 Implementirana je web aplikacija za preporuke knjiga.
 
-Web aplikacija omogučuje korisnicima ocjenjivanje knjiga. Ovisno o ocjenama korisnika predlaže knjige koje su ocjenili
-slični korisnici. Slične korisnike određuje koriteći algoritam K-najbližih susjeda. Svakom promjenom ocjena, ocjenjivanjem nove
+Web aplikacija omogućuje korisnicima ocjenjivanje knjiga. Ovisno o ocjenama korisnika predlaže knjige koje su ocijenili
+slični korisnici. Slične korisnike određuje koristeći algoritam K-najbližih susjeda. Svakom promjenom ocjena, ocjenjivanjem nove
 knjige ili brisanjem ocjena korisnik će potencijalno dobiti nove preporuke.
 
 \makebackmatter
