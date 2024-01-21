@@ -1,7 +1,7 @@
 package db
 
 const (
-	USERSCOLLECTION = "users2"
+	USERSCOLLECTION = "users"
     TAGSCOLLECTION = "most_popular_tags"
-    BOOKSCOLLECTION = "book_test_3"
+    BOOKSCOLLECTION = "books"
 )
