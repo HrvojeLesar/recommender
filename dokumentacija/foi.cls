@@ -383,17 +383,6 @@ unicode
     }
     
     \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
-    
-    \newpage
-    \thispagestyle{plain}
-    
-    {\begin{center}\bfseries{\prijevod{Sažetak}{Abstract}}\end{center}}
-    
-    \noindent \@sazetak
-    
-    \begin{flushleft}
-    \textbf{\prijevod{Ključne riječi}{Keywords}}: \@kljucneRijeci
-    \end{flushleft}
 
 
 }

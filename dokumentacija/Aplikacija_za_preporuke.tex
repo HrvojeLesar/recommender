@@ -22,9 +22,6 @@
 
 \smjer{Organizacija poslovnih sustava}
 
-\sazetak{Opsega od 100 do 300 riječi. Sažetak upućuje na temu rada, ukratko se iznosi čime se rad bavi, teorijsko-metodološka polazišta, glavne teze i smjer rada te zaključci.}
-% abstract of 100 to 300 words.
-
 % \kljucneRijeci{riječ; riječ; ...riječ; Obuhvaća $7\pm2$ ključna pojma koji su glavni predmet rasprave u radu.}
 % keywords including 7 +/- 2 syntagms
 
@@ -40,17 +37,19 @@
 \makeatletter \def\@dotsep{4.5} \makeatother
 \pagestyle{plain}
 
-
-
 \chapter{Uvod}
 
-Završni ili diplomski rad studenta/studentice je konačni rezultat uloženog napora u završetak studija.
-Obranom završnog ili diplomskog rada student/studentica stječe prava i obveze koje proizlaze iz završetka akademskog obrazovanja.
-S ciljem osiguranja potpore studentima pri pisanju završnog/diplomskog rada, izrađen je ovaj predložak oblikovanja samog rada.
+Kroz projekt će biti teoretski obrađene polustrukturirane baze podataka, polustrukturirani podaci, jedna od 
+često korištenih polustrukturiranih baza podataka MongoDB i teoretske osnove sustava za preporuke.
 
-Načelna napomena o strukturi rada jest da se nazivi i struktura poglavlja obavezno definiraju u dogovoru s mentorom/mentoricom.
-Sadržajna preporuka je da u uvodu treba opisati što je tema završnog/diplomskog rada,
-zašto je tema značajna te koja je motivacija studenta/ studentice za odabir teme \cite{oraictolic2011AkademskoPismoStrategije}.
+Cilje rada je implementirati aplikaciju za preporuke knjiga. Ovaj cilj će se postiči korištenjem programskog
+jezika \texttt{Go} u kojemu će se izrađivati web aplikacija. Aplikacija mora imati mogućnost komunikacije
+s bazom podataka MongoDB i način za postavljanje upita. Odabran je programski jezik \texttt{Go} zbog relativne
+jednostavnosti jezika i mogućnosti brze iteracije i izrade aplikacija, također ima vrlo dobru podršku za web.
+
+Web aplikacija mora imati mogućnost prikaza preporuka određenom korisniku. Preporuka se mora generirati na temelju
+drugih korisnika te se preporuke moraju mijenjati u slučaju promjene "ukusa" korisnika tj. korisnik i drugi
+korisnici imaju značaj i utjecaj na preporuke.
 
 \chapter{Polustrukturirane baze podataka}
 
@@ -130,7 +129,7 @@ Načini pristupa rješavanju problema preporuka moguće je kategorizirati u neko
 	      preporuke bile što bolje i točnije.
 \end{enumerate}
 
-\chapter{Model baze podataka}
+\chapter{Model baze podataka} \label{cha:model_baze_podataka}
 
 \section{Korišteni skup podataka}
 
@@ -167,7 +166,7 @@ db.book_tags.agreggate([
     { $replaceRoot: { newRoot: "$_id", }, },
     { $out: "most_popular_tags", },
 ])
-    \end{minted}
+\end{minted}
 \captionof{listing}{Kreiranje najpopularnijih tagova}
 \label{lst:tagovi}
 
@@ -352,6 +351,21 @@ Slika \ref{fig:promjena_ocjene} sadrži prikaz načina promjene ocjene.
 \end{figure}
 
 \chapter{Zaključak}
+
+Kroz rad su prikazane osnovne ideje polustrukturiranih baza podataka, objašnjeni način na koji ovakve vrste baza podataka
+pohranjuju podatke i struktura tih podataka.
+Opisan je MongoDB korišten za pohranu podataka i pokretanje upita na podacima, te je navedena osnovna ideja sustava za preporuke,
+različite vrste sustava i načina implementacija.
+
+U poglavlju \ref{cha:model_baze_podataka} prikazana je struktura podataka koji se koriste za preporučivanje knjiga.
+Opisan je proces pretvorbe podataka iz odabranog skupa podataka u polustrukturirane.
+Za implementaciju aplikacije korišten je programski jezik \texttt{Go}. Odabran je zbog svoje relativne jednostavnosti i brzine
+razvijanja aplikacija. Ima dobru podršku za komunikaciju s bazom MongoDB.
+Implementirana je web aplikacija za preporuke knjiga.
+
+Web aplikacija omogučuje korisnicima ocjenjivanje knjiga. Ovisno o ocjenama korisnika predlaže knjige koje su ocjenili
+slični korisnici. Slične korisnike određuje koriteći algoritam K-najbližih susjeda. Svakom promjenom ocjena, ocjenjivanjem nove
+knjige ili brisanjem ocjena korisnik će potencijalno dobiti nove preporuke.
 
 \makebackmatter
 
