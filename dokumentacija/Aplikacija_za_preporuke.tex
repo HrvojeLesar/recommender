@@ -198,7 +198,7 @@ dodjeljuje skup knjiga koje su ocijenili.
         { $out: "users", },
     ])
 \end{minted}
-\captionof{listing}{Dodavanje žanrova knjigama}
+\captionof{listing}{Dodjela knjiga korisnicima}
 \label{lst:korisnici}
 
 Završne kolekcije u bazi se mogu reprezentirati kao što je prikazano na sljedećoj slici \ref{fig:izvedene_kolekcije}.
@@ -292,7 +292,7 @@ Zadnji upit je brisanje ocjene. Brisanje se radi korištenjem \texttt{\$pull} na
 \begin{minted}[samepage]{javascript}
     db.users.updateOne({ _id: userId }, { $pull: { book_ratings: { "book.book_id": bookId } } } )
 \end{minted}
-\captionof{listing}{Promjena ocjene}
+\captionof{listing}{Brisanje ocjene}
 \label{lst:brisanje_ocjene}
 
 \chapter{Primjeri korištenja}
